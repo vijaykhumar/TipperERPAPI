@@ -477,6 +477,10 @@ public class TipperErpDbContext : DbContext
 			entity.Property(e => e.Description)
 				.HasMaxLength(200);
 		});
-
+		modelBuilder.Entity<AttachmentMaster>(entity =>
+		{
+			entity.ToTable("AttachmentMaster");
+			entity.HasKey(e => e.AttachmentId); // Define the primary key
+		});
 	}
 }
