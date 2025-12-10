@@ -11,10 +11,10 @@ WORKDIR /src
 COPY . .
 
 # Restore dependencies
-RUN dotnet restore "./TipperERP.API/TipperERP.API.csproj"
+RUN dotnet restore ".src/TipperERP.API/TipperERP.API.csproj"
 
 # Publish the API
-RUN dotnet publish "./TipperERP.API/TipperERP.API.csproj" -c Release -o /app/publish
+RUN dotnet publish ".src/TipperERP.API/TipperERP.API.csproj" -c Release -o /app/publish
 
 # STEP 3: Final runtime image
 FROM base AS final
