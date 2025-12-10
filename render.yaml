@@ -1,9 +1,9 @@
-# STEP 1: Use official .NET runtime for production
+# STEP 1: Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 8080
 
-# STEP 2: Build stage
+# STEP 2: Build image
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
@@ -11,17 +11,19 @@ WORKDIR /src
 COPY . .
 
 # Restore dependencies
-RUN dotnet restore ".src/TipperERP.API/TipperERP.API.csproj"
+RUN dotnet restore "./src/TipperERP.API/TipperERP.API.csproj"
 
-# Publish the API
-RUN dotnet publish ".src/TipperERP.API/TipperERP.API.csproj" -c Release -o /app/publish
+# Build and publish
+RUN dotnet publish "./src/TipperERP.API/TipperERP.API.csproj" \
+    -c Release -o /app/publish
 
 # STEP 3: Final runtime image
 FROM base AS final
 WORKDIR /app
-
-# Copy published output
 COPY --from=build /app/publish .
 
-# Start the API
+# Required for Render.com
+ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT}
+
+# Start API
 ENTRYPOINT ["dotnet", "TipperERP.API.dll"]
