@@ -114,6 +114,24 @@ builder.Services
             ValidateLifetime = true
         };
     });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLovable",
+        policy =>
+        {
+            policy.WithOrigins(
+                "https://*.lovable.dev",
+                "https://*.lovableproject.com",
+                "https://tippererpapi.onrender.com",
+                "http://localhost:3000",
+                "http://localhost:5173"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .SetIsOriginAllowed(_ => true); // Allows wildcard subdomains
+        });
+});
 
 builder.Services.AddAuthorization();
 
@@ -126,7 +144,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
-
+app.UseCors("AllowLovable");
 app.UseAuthentication();
 app.UseAuthorization();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
